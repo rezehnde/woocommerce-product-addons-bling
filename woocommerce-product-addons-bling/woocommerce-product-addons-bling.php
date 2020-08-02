@@ -158,4 +158,4 @@ function bling_addons_general_settings($settings)
 
     return $updated_settings;
 }
-  add_filter('woocommerce_general_settings', 'bling_general_settings');
+add_filter('woocommerce_general_settings', 'bling_addons_general_settings');
