@@ -3,11 +3,12 @@ This small WooCommerce plugin enables a Woocommerce website to save the product 
 
 ## How it works:
 
-A product called 'Sunglass' with two options (box and color) will be integrated on Bling as "Sunglass - Box Square - Color Red" besides only "Sunglass".
+A product called 'Sunglass' with two options (box and color) will be integrated on Bling creating the aditional options inside 'observações' field.
 
-The previous behaviour was forcing the e-commerce owner to look back on their WooCommerce store to find out which product options was chosen by their customers.
+## Backlog:
+[ ] Create an [Integration Page](https://github.com/woogists/woocommerce-integration-demo/blob/master/woocommerce-integration-demo.php)
 
-With this plugin, the e-commerce owner just see on Blink ERP panel which was the options selected by their customers.
-
-#### Creator:
+### Creator:
 - [Marcos Rezende](https://www.linkedin.com/in/rezehnde/)
+
+
