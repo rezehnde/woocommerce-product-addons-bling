@@ -61,8 +61,9 @@ function bling_addons_get_xml(WC_Order $order)
     $pedido = new SimpleXMLElement('<pedido></pedido>');
     $pedido->addAttribute('encoding', 'UTF-8', 'pedido');
     $pedido->addChild('numero_loja', $order->get_id());
-    $cliente = $pedido->addChild('cliente');
 
+    // Cliente
+    $cliente = $pedido->addChild('cliente');
     $tipoPessoa = $order->get_meta('_billing_persontype');
     if ('1' == $tipoPessoa) {
         $cliente->addChild('tipoPessoa', 'F');
@@ -85,8 +86,8 @@ function bling_addons_get_xml(WC_Order $order)
     $cliente->addChild('fone', $order->get_billing_phone());
     $cliente->addChild('email', $order->get_billing_email());
 
+    // Itens
     $itens = $pedido->addChild('itens');
-
     $obs = '';
     foreach ($order->get_items() as $order_item) {
         $obs .= $order_item->get_name();
@@ -104,9 +105,16 @@ function bling_addons_get_xml(WC_Order $order)
             $obs .= ' - '.$addons->key.': '.$addons->value.PHP_EOL;
         }
     }
+    $pedido->addChild('obs', $obs);
+
+    foreach ($order->get_shipping_methods() as $shipping_item) {
+        $transporte = $pedido->addChild('transporte');
+        $transporte->addChild('tipo_frete', $shipping_item->get_id());
+    }
+
+    $pedido->addChild('idFormaPagamento', $order->get_payment_method());
 
     $pedido->addChild('vlr_frete', $order->get_shipping_total());
-    $pedido->addChild('obs', $obs);
 
     return str_replace('<?xml version="1.0"?>', '<?xml version="1.0" encoding="UTF-8"?>', $pedido->asXML());
 }
