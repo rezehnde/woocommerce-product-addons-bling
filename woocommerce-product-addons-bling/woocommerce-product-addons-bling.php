@@ -102,7 +102,7 @@ function bling_addons_get_xml(WC_Order $order)
         $item->addChild('vlr_unit', $item_single_price);
 
         foreach ($order_item->get_formatted_meta_data() as $addons) {
-            $obs .= ' - '.$addons->key.': '.$addons->value.PHP_EOL;
+            $obs .= ' - '.$addons->key.': '.$addons->value.'<br/>';
         }
     }
     $pedido->addChild('obs', $obs);
