@@ -38,14 +38,26 @@ function bling_addons_checkout_update_order_meta($order_id)
 
     file_put_contents(__DIR__.'/request/order-'.$order_id.'-request.xml', print_r($xml, true));
 
-    // '030a9fde11b48b0df316c710b4e1ccbad46d0eff129a0431650f92ec44977f1c7f4ef61f',
     $bling_api_key = get_option('woocommerce_bling_api_key');
 
     if (!empty($bling_api_key)) {
-        $response = bling_addons_send_order('https://bling.com.br/Api/v2/pedido/json/', [
+        $data = [
             'apikey' => $bling_api_key,
             'xml' => rawurlencode($xml),
-        ]);
+        ];
+
+        $response = '';
+        $send_order = function() use($response) {
+            $curl_handle = curl_init();
+            curl_setopt($curl_handle, CURLOPT_URL, 'https://bling.com.br/Api/v2/pedido/json/');
+            curl_setopt($curl_handle, CURLOPT_POST, count($data));
+            curl_setopt($curl_handle, CURLOPT_POSTFIELDS, $data);
+            curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($curl_handle);
+            curl_close($curl_handle);
+        };
+        $send_order();
+
         file_put_contents(__DIR__.'/response/order-'.$order_id.'-response.json', print_r($response, true));
     }
 }
@@ -117,27 +129,6 @@ function bling_addons_get_xml(WC_Order $order)
     $pedido->addChild('vlr_frete', $order->get_shipping_total());
 
     return str_replace('<?xml version="1.0"?>', '<?xml version="1.0" encoding="UTF-8"?>', $pedido->asXML());
-}
-
-/**
- * Send order data to Bling.
- *
- * @param string $url  Url to post the order creation
- * @param array  $data An array with an api_key and a xml formatted string
- *
- * @return string A JSON well formed string
- */
-function bling_addons_send_order($url, $data)
-{
-    $curl_handle = curl_init();
-    curl_setopt($curl_handle, CURLOPT_URL, $url);
-    curl_setopt($curl_handle, CURLOPT_POST, count($data));
-    curl_setopt($curl_handle, CURLOPT_POSTFIELDS, $data);
-    curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($curl_handle);
-    curl_close($curl_handle);
-
-    return $response;
 }
 
 /**
